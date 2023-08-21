@@ -1,0 +1,51 @@
+// Definitions for ChipDip RDC2-0059
+/dts-v1/;
+/plugin/;
+
+/ {
+        compatible = "brcm,bcm2835";
+
+        fragment@0 {
+                target = <&i2s>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+
+        fragment@1 {
+                target = <&i2c1>;
+                __overlay__ {
+                        #address-cells = <1>;
+                        #size-cells = <0>;
+                        status = "okay";
+
+                        ssm3582: ssm3582@10 {
+                                #sound-dai-cells = <0>;
+                                compatible = "adi,ssm3582a";
+                                reg = <0x10>;
+                                status = "okay";
+                                stereo;
+                                volts = <10>;
+                                tdm = <5>;
+                        };
+
+                };
+        };
+
+
+        fragment@2 {
+                target = <&sound>;
+                __overlay__ {
+                    status = "okay";
+                    compatible = "simple-audio-card";
+	                simple-audio-card,name = "RDC2-0059-Sound-Card";
+	                simple-audio-card,format = "i2s";
+                        simple-audio-card,cpu {
+	                    sound-dai = <&i2s>;
+                        };
+	                simple-audio-card,codec {
+		                sound-dai = <&ssm3582>;
+		       	};
+                };
+        };
+};
